@@ -8,6 +8,7 @@ const pool = new Pool({
   host: process.env.HOST,
   port: process.env.PORT,
   database: process.env.DATABASE,
+  ssl: { rejectUnauthorized: false },
 });
 // Test the connection
 pool.query("SELECT * FROM todo", (err, result) => {
