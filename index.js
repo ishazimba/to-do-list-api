@@ -24,7 +24,6 @@ app.post("/todos", async (req, res) => {
     console.error(err.message);
   }
 });
-i;
 
 //get all todos
 app.get("/todos", async (req, res) => {
