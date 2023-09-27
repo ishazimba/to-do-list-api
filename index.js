@@ -13,10 +13,10 @@ app.use(express.json()); // req body
 // Create a todo
 app.post("/todos", async (req, res) => {
   try {
-    const { description } = req.body;
+    const { description, status, due_date } = req.body;
     const newTodo = await pool.query(
-      "INSERT INTO todo (description) VALUES($1) RETURNING *",
-      [description]
+      "INSERT INTO todo (description, status, due_date) VALUES($1, $2, $3) RETURNING *",
+      [description, status, due_date]
     );
     res.json(newTodo.rows[0]);
   } catch (err) {
@@ -55,10 +55,10 @@ app.get("/todos/:id", async (req, res) => {
 app.put("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { description } = req.body;
+    const { description, status, due_date } = req.body;
     const updateTodo = await pool.query(
-      "UPDATE todo SET description = $1 WHERE id =  $2 RETURNING *",
-      [description, id]
+      "UPDATE todo SET description = $1, status = $2, due_date = $3 WHERE id = $4 RETURNING *",
+      [description, status, due_date, id]
     );
     if (updateTodo.rows.length === 0) {
       return res.status(404).json({ error: "Todo not found" });
