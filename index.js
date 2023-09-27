@@ -8,6 +8,22 @@ const pool = require("./db");
 app.use(cors());
 app.use(express.json()); // req body
 
+// Create a todo table if it doesn't exist
+(async () => {
+  try {
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS todo (
+        todo_id SERIAL PRIMARY KEY,
+        description TEXT
+      )
+    `;
+    await pool.query(createTableQuery);
+    console.log("Todo table is ready.");
+  } catch (err) {
+    console.error("Error creating todo table:", err);
+  }
+})();
+
 // Routes
 
 // Create a todo
