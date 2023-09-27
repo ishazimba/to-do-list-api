@@ -4,14 +4,13 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
-//middleware
+// Middleware
 app.use(cors());
 app.use(express.json()); // req body
 
-//ROUTES
+// Routes
 
-//create a todo
-
+// Create a todo
 app.post("/todos", async (req, res) => {
   try {
     const { description } = req.body;
@@ -21,35 +20,40 @@ app.post("/todos", async (req, res) => {
     );
     res.json(newTodo.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error creating a todo:", err); // Log the error
+    res.status(500).json({ error: "Internal Server Error" }); // Return an error response
   }
 });
 
-//get all todos
+// Get all todos
 app.get("/todos", async (req, res) => {
   try {
-    const alltodos = await pool.query("SELECT * FROM todo");
-    res.json(alltodos.rows);
+    const allTodos = await pool.query("SELECT * FROM todo");
+    res.json(allTodos.rows);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error fetching todos:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-//get a todo
-
+// Get a todo
 app.get("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
       id,
     ]);
+    if (todo.rows.length === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
     res.json(todo.rows[0]);
   } catch (err) {
-    console.log(err.message);
+    console.error("Error fetching a todo:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-//update a todo
+// Update a todo
 app.put("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -58,26 +62,35 @@ app.put("/todos/:id", async (req, res) => {
       "UPDATE todo SET description = $1 WHERE todo_id =  $2 RETURNING *",
       [description, id]
     );
+    if (updateTodo.rows.length === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
     res.json("TODO was updated");
   } catch (err) {
-    console.log(err.message);
+    console.error("Error updating a todo:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-//delete a todo
-
+// Delete a todo
 app.delete("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
       id,
     ]);
+    if (deleteTodo.rowCount === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
     res.json("Todo was deleted!");
   } catch (err) {
-    console.log(err.message);
+    console.error("Error deleting a todo:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.listen(3001, () => {
-  console.log("server has started on port 3000");
+const port = process.env.PORT || 3000; // Use the provided PORT or default to 3000
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
