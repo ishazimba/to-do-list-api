@@ -32,7 +32,7 @@ This is a simple TodoList API built using Express.js and PostgreSQL. The API is 
 
 ## Usage
 
-You can use the provided API endpoints to manage your todo activities. Simply make HTTP requests to the respective endpoints using tools like `curl`, `fetch`, or Postman.
+You can use the provided API endpoints to manage your todo activities. Simply make HTTP requests to the respective endpoints using tools like insomnia or Postman.
 
 ## Getting Started
 
