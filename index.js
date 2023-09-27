@@ -24,6 +24,7 @@ app.post("/todos", async (req, res) => {
     console.error(err.message);
   }
 });
+i;
 
 //get all todos
 app.get("/todos", async (req, res) => {
@@ -78,8 +79,6 @@ app.delete("/todos/:id", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(3001, () => {
+  console.log("server has started on port 3000");
 });
