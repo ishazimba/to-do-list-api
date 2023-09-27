@@ -40,9 +40,7 @@ app.get("/todos", async (req, res) => {
 app.get("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
+    const todo = await pool.query("SELECT * FROM todo WHERE id = $1", [id]);
     if (todo.rows.length === 0) {
       return res.status(404).json({ error: "Todo not found" });
     }
@@ -59,7 +57,7 @@ app.put("/todos/:id", async (req, res) => {
     const { id } = req.params;
     const { description } = req.body;
     const updateTodo = await pool.query(
-      "UPDATE todo SET description = $1 WHERE todo_id =  $2 RETURNING *",
+      "UPDATE todo SET description = $1 WHERE id =  $2 RETURNING *",
       [description, id]
     );
     if (updateTodo.rows.length === 0) {
@@ -76,9 +74,7 @@ app.put("/todos/:id", async (req, res) => {
 app.delete("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
+    const deleteTodo = await pool.query("DELETE FROM todo WHERE id = $1", [id]);
     if (deleteTodo.rowCount === 0) {
       return res.status(404).json({ error: "Todo not found" });
     }
